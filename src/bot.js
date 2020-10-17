@@ -17,10 +17,16 @@ client.on("message", async (message) => {
   switch (CMD) {
     case "nh":
       FINVIZ.newHigh(message);
-      break;
+			break;
+		case "nl":
+			FINVIZ.newLow(message);
+			break;
     case "gainers":
       FINVIZ.gainers(message);
-      break;
+			break;
+		case "losers":
+			FINVIZ.losers(message);
+			break;
   }
 });
 

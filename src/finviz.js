@@ -32,6 +32,30 @@ const downloadPage = (url) => {
   });
 };
 
+const getNegativeChangeData = async () => {
+  const querySelector = "#homepage > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td:nth-child(3) > table > tbody > tr:not(:first-child)";
+  const page = await downloadPage(url);
+  const $ = cheerio.load(page);
+  const data = $(querySelector)
+  const rows = Array.from(data).map((r) => {
+    const $$ = cheerio.load(r);
+    // [TODO]: May need to format these strings.
+    const ticker = $$("td:first-child > a").text();
+    const last = $$("td:nth-child(2)").text();
+    const change = $$("td:nth-child(3) > span").text();
+    const volume = $$("td:nth-child(4)").text();
+    const signal = $$("td:last-child > a").text();
+    return {
+      ticker: ticker,
+      signal: signal,
+      change: change,
+      last: last,
+      volume: volume,
+    };
+  });
+  return rows;
+}
+
 const getPositiveChangeData = async () => {
   const page = await downloadPage(url);
   const $ = cheerio.load(page);
@@ -63,9 +87,9 @@ exports.newHigh = async (message) => {
     (obj) => obj.signal.toLowerCase() === "New High".toLowerCase()
   );
   let e = createEmbed(
-    newHighs.map((high) => ({
-      key: high.ticker,
-      value: `Change: ${high.change}, Volume: ${high.volume}`,
+    newHighs.map((obj) => ({
+      key: obj.ticker,
+      value: `Change: ${obj.change}, Volume: ${obj.volume}`,
     }))
   );
   e.setTitle("New Highs");
@@ -77,6 +101,27 @@ exports.newHigh = async (message) => {
   });
 };
 
+exports.newLow = async (message) => {
+  const rows = await getNegativeChangeData();
+  const lows = rows.filter(
+    (obj) => obj.signal.toLowerCase() === "New Low".toLowerCase()
+  );
+  let e = createEmbed(
+    lows.map((obj) => ({
+      key: obj.ticker,
+      value: `Change: ${obj.change}, Volume: ${obj.volume}`,
+    }))
+  );
+  e.setTitle("New Lows");
+  e.setFooter("Live Data from the FinViz website.");
+  e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_newlows");
+  console.log("Embed Created");
+  message.channel.send({
+    embed: e,
+  });
+
+}
+
 exports.gainers = async (message) => {
   const rows = await getPositiveChangeData();
   console.log(rows);
@@ -84,9 +129,9 @@ exports.gainers = async (message) => {
     (obj) => obj.signal.toLowerCase() === "Top Gainers".toLowerCase()
   );
   let e = createEmbed(
-    gainers.map((g) => ({
-      key: g.ticker,
-      value: `Change: ${g.change}, Volume: ${g.volume}`,
+    gainers.map((obj) => ({
+      key: obj.ticker,
+      value: `Change: ${obj.change}, Volume: ${obj.volume}`,
     }))
   );
   e.setTitle("Top Gainers");
@@ -97,3 +142,24 @@ exports.gainers = async (message) => {
     embed: e,
   });
 };
+
+exports.losers = async (message) => {
+  const rows = await getNegativeChangeData();
+  console.log(rows);
+  const losers = rows.filter(
+    (obj) => obj.signal.toLowerCase() === "Top Losers".toLowerCase()
+  );
+  let e = createEmbed(
+    losers.map((obj) => ({
+      key: obj.ticker,
+      value: `Change: ${obj.change}, Volume: ${obj.volume}`,
+    }))
+  );
+  e.setTitle("Top Losers");
+  e.setFooter("Live Data from the FinViz website.");
+  e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_toplosers");
+  console.log("Embed Created");
+  message.channel.send({
+    embed: e,
+  });
+}
