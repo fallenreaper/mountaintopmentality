@@ -32,7 +32,7 @@ const downloadPage = (url) => {
   });
 };
 
-exports.process = async (message) => {
+const getPositiveChangeData = async () => {
   const page = await downloadPage(url);
   const $ = cheerio.load(page);
   const data = $(
@@ -54,6 +54,31 @@ exports.process = async (message) => {
       volume: volume,
     };
   });
+  return rows;
+};
+
+exports.newHigh = async (message) => {
+  const rows = await getPositiveChangeData();
+  const newHighs = rows.filter(
+    (obj) => obj.signal.toLowerCase() === "New High".toLowerCase()
+  );
+  let e = createEmbed(
+    newHighs.map((high) => ({
+      key: high.ticker,
+      value: `Change: ${high.change}, Volume: ${high.volume}`,
+    }))
+  );
+  e.setTitle("New Highs");
+  e.setFooter("Live Data from the FinViz website.");
+  e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_newhigh");
+  console.log("Embed Created");
+  message.channel.send({
+    embed: e,
+  });
+};
+
+exports.gainers = async (message) => {
+  const rows = await getPositiveChangeData();
   console.log(rows);
   const gainers = rows.filter(
     (obj) => obj.signal.toLowerCase() === "Top Gainers".toLowerCase()

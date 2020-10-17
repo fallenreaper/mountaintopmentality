@@ -15,8 +15,11 @@ client.on("message", async (message) => {
     .split(/\s+/);
 
   switch (CMD) {
+    case "nh":
+      FINVIZ.newHigh(message);
+      break;
     case "gainers":
-      FINVIZ.process(message);
+      FINVIZ.gainers(message);
       break;
   }
 });
