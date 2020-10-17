@@ -1,0 +1,6 @@
+FROM node:latest
+
+COPY . .
+RUN npm install
+ENV DISCORD_TOKEN=THISTOKENNEEDSTOBEDEFINEDBYYOU
+CMD ["npm", "start"]
