@@ -17,7 +17,13 @@ And it is as simple as that.  For Discord Access Token, while you can set it in 
 export DISCORD_TOKEN="sdfghjksdfghjdfguysdfgkuasdgkuag"
 ```
 
-Alternatively we will have a docker container for this.  While can be built, but will soon exist on the Docker hub.
+Added a Docker container so that way the app does not need to be deployed actively under your machine.  You can run the docker container and it will serve the Dicord bot for you.
+- In order to use docker, you will need to visit their website and download their application.  After reading how it works, and you have access to docker in the command line (CLI) you can run:
+
+```
+docker build -t mountaintop-mentality .
+docke run -it -d --name mtm-bot mountaintop-mentality:latest
+```
 
 ## Utility and Functions
 { A list of Commands will go here.}
