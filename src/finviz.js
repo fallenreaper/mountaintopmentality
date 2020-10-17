@@ -20,11 +20,11 @@ const downloadPage = (url) => {
   return new Promise((resolve, reject) => {
     request(url, (error, response, body) => {
       if (error) {
-        console.error("Failed to Fetch URL:", error)
+        console.error("Failed to Fetch URL:", error);
         reject(error);
       }
       if (response.statusCode != 200) {
-        console.error(`Invalid Status Code <${response.statusCode}>`)
+        console.error(`Invalid Status Code <${response.statusCode}>`);
         reject("Invalid status code <" + response.statusCode + ">");
       }
       resolve(body);
@@ -56,15 +56,19 @@ exports.process = async (message) => {
   });
   console.log(rows);
   const gainers = rows.filter(
-        (obj) => obj.signal.toLowerCase() === "Top Gainers".toLowerCase()
-      );
-      let e = createEmbed(gainers.map(g => ({key: g.ticker, value: `Change: ${g.change}, Volume: ${g.volume}`})))
-    e.setTitle("Top Gainers")
-    e.setAuthor("~Will~")
-    e.setFooter("This is a live pull")
-    e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_topgainers")
-    console.log("Embed Created")
-    message.channel.send({
-      embed: e
-    })
+    (obj) => obj.signal.toLowerCase() === "Top Gainers".toLowerCase()
+  );
+  let e = createEmbed(
+    gainers.map((g) => ({
+      key: g.ticker,
+      value: `Change: ${g.change}, Volume: ${g.volume}`,
+    }))
+  );
+  e.setTitle("Top Gainers");
+  e.setFooter("Live Data from the FinViz website.");
+  e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_topgainers");
+  console.log("Embed Created");
+  message.channel.send({
+    embed: e,
+  });
 };
