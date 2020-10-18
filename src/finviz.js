@@ -122,6 +122,7 @@ exports.newLow = async (message) => {
 
 }
 
+
 exports.gainers = async (message) => {
   const rows = await getPositiveChangeData();
   console.log(rows);
@@ -162,4 +163,23 @@ exports.losers = async (message) => {
   message.channel.send({
     embed: e,
   });
+}
+
+exports.chart = (message, args) => {
+  const [ticker, interval, ta] = args
+  const bar = interval.substr(0,1).toLowerCase()
+  const s = new Set(['d','m','w', 'y'])
+  if (!s.has(bar)){
+    message.channel.send("Invalid Interval selection.  Needs to be: [d]aily, [w]eekly, [m]onthly, [y]early")
+    return
+  }
+  if (bar != 'd' && ta) {
+    message.channel.send("You Currently cant have Weekly Traveling Average from Source Imagery.");
+    return;
+  }
+  const _url = `https://charts2.finviz.com/chart.ashx?t=${ticker.toUpperCase()}&ty=c&ta=${ta?1:0}&p=${bar}&s=l`
+  
+  const embed = new MessageEmbed()
+  embed.setImage(_url)
+  message.channel.send({embed})
 }

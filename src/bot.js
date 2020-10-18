@@ -27,6 +27,9 @@ client.on("message", async (message) => {
 		case "losers":
 			FINVIZ.losers(message);
 			break;
+		case "chart":
+			FINVIZ.chart(message, args);
+			break;
   }
 });
 
