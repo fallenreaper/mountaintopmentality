@@ -3,6 +3,13 @@ const cheerio = require("cheerio");
 const request = require("request");
 
 const url = "https://finviz.com/";
+const FRONT_PAGE_CACHE = null;
+const FRONT_PAGE_REFRESH_DURATION = 1000 * 60; // 1 minute.
+const clearFrontPageTimer = () => {
+  setTimeout(() => {
+    FRONT_PAGE_CACHE = null;
+  }, FRONT_PAGE_REFRESH_DURATION);
+};
 
 const createEmbed = (rowData) => {
   /* Creates a MessageEmbed Object, for display Purposed.
@@ -33,10 +40,16 @@ const downloadPage = (url) => {
 };
 
 const getNegativeChangeData = async () => {
-  const querySelector = "#homepage > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td:nth-child(3) > table > tbody > tr:not(:first-child)";
-  const page = await downloadPage(url);
+  let page = FRONT_PAGE_CACHE;
+  if (!FRONT_PAGE_CACHE) {
+    page = FRONT_PAGE_CACHE = await downloadPage(url);
+    clearFrontPageTimer();
+  }
+  const querySelector =
+    "#homepage > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td:nth-child(3) > table > tbody > tr:not(:first-child)";
+
   const $ = cheerio.load(page);
-  const data = $(querySelector)
+  const data = $(querySelector);
   const rows = Array.from(data).map((r) => {
     const $$ = cheerio.load(r);
     // [TODO]: May need to format these strings.
@@ -54,14 +67,18 @@ const getNegativeChangeData = async () => {
     };
   });
   return rows;
-}
+};
 
 const getPositiveChangeData = async () => {
-  const page = await downloadPage(url);
+  let page = FRONT_PAGE_CACHE;
+  if (!FRONT_PAGE_CACHE) {
+    page = FRONT_PAGE_CACHE = await downloadPage(url);
+    clearFrontPageTimer();
+  }
+  const querySelector =
+    "#homepage > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td:first-child > table > tbody > tr:not(:first-child)";
   const $ = cheerio.load(page);
-  const data = $(
-    "#homepage > table > tbody > tr:nth-child(2) > td > table > tbody > tr > td:first-child > table > tbody > tr:not(:first-child)"
-  );
+  const data = $(querySelector);
   const rows = Array.from(data).map((r) => {
     const $$ = cheerio.load(r);
     // [TODO]: May need to format these strings.
@@ -119,9 +136,7 @@ exports.newLow = async (message) => {
   message.channel.send({
     embed: e,
   });
-
-}
-
+};
 
 exports.gainers = async (message) => {
   const rows = await getPositiveChangeData();
@@ -163,23 +178,29 @@ exports.losers = async (message) => {
   message.channel.send({
     embed: e,
   });
-}
+};
 
 exports.chart = (message, args) => {
-  const [ticker, interval, ta] = args
-  const bar = interval.substr(0,1).toLowerCase()
-  const s = new Set(['d','m','w', 'y'])
-  if (!s.has(bar)){
-    message.channel.send("Invalid Interval selection.  Needs to be: [d]aily, [w]eekly, [m]onthly, [y]early")
-    return
-  }
-  if (bar != 'd' && ta) {
-    message.channel.send("You Currently cant have Weekly Traveling Average from Source Imagery.");
+  const [ticker, interval, ta] = args;
+  const bar = interval.substr(0, 1).toLowerCase();
+  const s = new Set(["d", "m", "w", "y"]);
+  if (!s.has(bar)) {
+    message.channel.send(
+      "Invalid Interval selection.  Needs to be: [d]aily, [w]eekly, [m]onthly, [y]early"
+    );
     return;
   }
-  const _url = `https://charts2.finviz.com/chart.ashx?t=${ticker.toUpperCase()}&ty=c&ta=${ta?1:0}&p=${bar}&s=l`
-  
-  const embed = new MessageEmbed()
-  embed.setImage(_url)
-  message.channel.send({embed})
-}
+  if (bar != "d" && ta) {
+    message.channel.send(
+      "You Currently cant have Weekly Traveling Average from Source Imagery."
+    );
+    return;
+  }
+  const _url = `https://charts2.finviz.com/chart.ashx?t=${ticker.toUpperCase()}&ty=c&ta=${
+    ta ? 1 : 0
+  }&p=${bar}&s=l`;
+
+  const embed = new MessageEmbed();
+  embed.setImage(_url);
+  message.channel.send({ embed });
+};
