@@ -16,7 +16,6 @@ const createEmbed = (rowData) => {
   rowData:  List of objects with `key`: `value` pairs to display header and content of each field
   */
   const e = new MessageEmbed();
-  console.log("Row Data", rowData);
   rowData.forEach((row) => {
     e.addField(row.key, row.value);
   });
@@ -112,7 +111,6 @@ exports.newHigh = async (message) => {
   e.setTitle("New Highs");
   e.setFooter("Live Data from the FinViz website.");
   e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_newhigh");
-  console.log("Embed Created");
   message.channel.send({
     embed: e,
   });
@@ -132,7 +130,6 @@ exports.newLow = async (message) => {
   e.setTitle("New Lows");
   e.setFooter("Live Data from the FinViz website.");
   e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_newlows");
-  console.log("Embed Created");
   message.channel.send({
     embed: e,
   });
@@ -140,7 +137,6 @@ exports.newLow = async (message) => {
 
 exports.gainers = async (message) => {
   const rows = await getPositiveChangeData();
-  console.log(rows);
   const gainers = rows.filter(
     (obj) => obj.signal.toLowerCase() === "Top Gainers".toLowerCase()
   );
@@ -153,7 +149,6 @@ exports.gainers = async (message) => {
   e.setTitle("Top Gainers");
   e.setFooter("Live Data from the FinViz website.");
   e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_topgainers");
-  console.log("Embed Created");
   message.channel.send({
     embed: e,
   });
@@ -161,7 +156,6 @@ exports.gainers = async (message) => {
 
 exports.losers = async (message) => {
   const rows = await getNegativeChangeData();
-  console.log(rows);
   const losers = rows.filter(
     (obj) => obj.signal.toLowerCase() === "Top Losers".toLowerCase()
   );
@@ -174,7 +168,6 @@ exports.losers = async (message) => {
   e.setTitle("Top Losers");
   e.setFooter("Live Data from the FinViz website.");
   e.setURL("https://finviz.com/screener.ashx?v=340&s=ta_toplosers");
-  console.log("Embed Created");
   message.channel.send({
     embed: e,
   });
