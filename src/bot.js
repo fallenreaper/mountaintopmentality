@@ -8,6 +8,39 @@ const client = new Client({
 
 const PREFIX = "!";
 
+//Welcome Message:
+client.on("guildMemberAdd", (member) => {
+  /// This Requires a channel named "welcome"
+  const rslt = member.guild.channels.cache.filter((channel) => {
+    return channel.name.toLowerCase().startsWith("welcome");
+  });
+  if (rslt.size === 0) {
+    console.log("Invalid Channel Lookup.");
+    return;
+  }
+  const embed = new MessageEmbed();
+  embed.setImage(
+    "https://cdn.discordapp.com/attachments/750512393120907344/767551173628395540/image0.jpg"
+  );
+  embed.setAuthor("The Mountaintop Mentality Team.");
+  embed.addField(
+    "Message From The Team!",
+    `Hey there @${member.nickname}, We wanted to welcome you to the team.  Here at Mountaintop Mentality, we are a team of people who want to make all of our dreams come true.  With practice, and patience, we are able to develop a solid trading plan and teach you enough to find great stocks and options yourself.  We hope you enjoy your time with us and remember! We will climb and make it up to the peak, together.`
+  );
+  embed.addField("Questions:", "Reach out to our team!", true);
+  embed.addField(
+    "Intros:",
+    "Feel free to introduce yourself so we can gauge your interest and passions.",
+    true
+  );
+  embed.addField(
+    "What We Offer:",
+    "daily trades, ai bots, live call outs and much more!"
+  );
+  rslt.first().send(`Welcome <@${member.id}>!`);
+  rslt.first().send({ embed: embed });
+});
+
 client.on("message", async (message) => {
   const [CMD, ...args] = message.content
     .trim()
@@ -33,7 +66,7 @@ client.on("message", async (message) => {
       ].forEach((i) => {
         em.addField(i.t, i.d);
       });
-			message.channel.send({embed: em})
+      message.channel.send({ embed: em });
       break;
     case "nh":
       FINVIZ.newHigh(message);
