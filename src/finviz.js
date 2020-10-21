@@ -3,7 +3,7 @@ const cheerio = require("cheerio");
 const request = require("request");
 
 const url = "https://finviz.com/";
-const FRONT_PAGE_CACHE = null;
+let FRONT_PAGE_CACHE = null;
 const FRONT_PAGE_REFRESH_DURATION = 1000 * 60; // 1 minute.
 const clearFrontPageTimer = () => {
   setTimeout(() => {
