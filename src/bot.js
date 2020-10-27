@@ -25,7 +25,7 @@ client.on("guildMemberAdd", (member) => {
   embed.setAuthor("The Mountaintop Mentality Team.");
   embed.addField(
     "Message From The Team!",
-    `Hey there @${member.nickname}, We wanted to welcome you to the team.  Here at Mountaintop Mentality, we are a team of people who want to make all of our dreams come true.  With practice, and patience, we are able to develop a solid trading plan and teach you enough to find great stocks and options yourself.  We hope you enjoy your time with us and remember! We will climb and make it up to the peak, together.`
+    `Hey there, We wanted to welcome you to the team.  Here at Mountaintop Mentality, we are a team of people who want to make all of our dreams come true.  With practice, and patience, we are able to develop a solid trading plan and teach you enough to find great stocks and options yourself.  We hope you enjoy your time with us and remember! We will climb and make it up to the peak, together.`
   );
   embed.addField("Questions:", "Reach out to our team!", true);
   embed.addField(
