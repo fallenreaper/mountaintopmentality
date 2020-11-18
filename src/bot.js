@@ -8,9 +8,9 @@ const client = new Client({
 
 const PREFIX = "!";
 
-//Welcome Message:
-client.on("guildMemberAdd", (member) => {
+const newMember = (member) => {
   /// This Requires a channel named "welcome"
+  console.log("In here. ", member.id)
   const rslt = member.guild.channels.cache.filter((channel) => {
     return channel.name.toLowerCase().startsWith("welcome");
   });
@@ -37,9 +37,13 @@ client.on("guildMemberAdd", (member) => {
     "What We Offer:",
     "daily trades, ai bots, live call outs and much more!"
   );
+  console.log("Welcome")
   rslt.first().send(`Welcome <@${member.id}>!`);
+  console.log("Sending dump")
   rslt.first().send({ embed: embed });
-});
+}
+//Welcome Message:
+client.on("guildMemberAdd", newMember);
 
 client.on("message", async (message) => {
   const [CMD, ...args] = message.content
@@ -48,6 +52,9 @@ client.on("message", async (message) => {
     .split(/\s+/);
 
   switch (CMD) {
+    // case "new":
+    //   newMember(message.member)
+    //   break;
     case "help":
       const em = new MessageEmbed();
       em.setTitle("Help Menu");
