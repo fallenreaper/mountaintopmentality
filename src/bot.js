@@ -11,10 +11,9 @@ const PREFIX = "!";
 const newMember = (member) => {
   /// This Requires a channel named "welcome"
   console.log("In here. ", member.id)
-  const rslt = member.guild.channels.cache.filter((channel) => {
-    return channel.name.toLowerCase().startsWith("welcome");
-  });
-  if (rslt.size === 0) {
+  console.log(member.guild.channels)
+  const welcomeChannel = member.guild.channels.cache.find(ch => ch.name.toLowerCase().startsWith("welcome"));
+  if (!welcomeChannel) {
     console.log("Invalid Channel Lookup.");
     return;
   }
@@ -38,9 +37,9 @@ const newMember = (member) => {
     "daily trades, ai bots, live call outs and much more!"
   );
   console.log("Welcome")
-  rslt.first().send(`Welcome <@${member.id}>!`);
+  welcomeChannel.send(`Welcome <@${member.id}>!`);
   console.log("Sending dump")
-  rslt.first().send({ embed: embed });
+  welcomeChannel.send({ embed: embed });
 }
 //Welcome Message:
 client.on("guildMemberAdd", newMember);
