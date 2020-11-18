@@ -52,9 +52,11 @@ client.on("message", async (message) => {
     .split(/\s+/);
 
   switch (CMD) {
-    // case "new":
-    //   newMember(message.member)
-    //   break;
+    case "test":
+      if (args.length > 0 && args[0].toLowerCase() == 'newUser'){
+        newMember(message.member)
+      }
+      break;
     case "help":
       const em = new MessageEmbed();
       em.setTitle("Help Menu");
