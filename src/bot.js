@@ -53,7 +53,7 @@ client.on("message", async (message) => {
 
   switch (CMD) {
     case "test":
-      if (args.length > 0 && args[0].toLowerCase() == 'newUser'){
+      if (args.length > 0 && args[0].toLowerCase() === 'newUser'.toLowerCase()){
         newMember(message.member)
       }
       break;
