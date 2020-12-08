@@ -10,7 +10,15 @@
 			"endDate": "format: yyyy-mm-dd",
 			"sort":"String: asc, desc",
 			"limit": "Default 5k, Max: 50k.",
-			"token": "Your API Token"
+			"token": "Your API Token",
+			"o": "Open Value",
+			"h": "High Value",
+			"l": "Low Value",
+			"c": "Close Value",
+			"v": "Volume",
+			"vw":"Volume Weighted Average",
+			"t": "Timestamp",
+			"n": "Number of items in Aggregate Window"
 		},
 		"routes": {
 			"barAggregate": "https://api.polygon.io/v2/aggs/ticker/{ticker}/range/{multiplier}/{timespan}/{startDate}/{endDate}?sort={sort}&limit={limit}&apiKey={token}"		}
